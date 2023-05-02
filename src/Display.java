@@ -40,7 +40,12 @@ public class Display extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isFirstPlayerTurn) {
-                    Player.setText(turnOrder[0].getName());
+                    if (turnOrder[0].getName().substring(turnOrder[0].getName().length()-1).equalsIgnoreCase("s")) {
+                        Player.setText(turnOrder[0].getName() + "'s turn.");
+                    } else {
+                        Player.setText(turnOrder[0].getName() + "' turn.");
+                    }
+
                     isFirstPlayerTurn = false;
                 } else {
                     Player.setText(turnOrder[1].getName());

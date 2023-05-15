@@ -15,10 +15,14 @@ public class Display extends JFrame {
     private JLabel currentPow;
     private JLabel currentAng;
     private Tank[] turnOrder;
+    private Tank playerOne;
+    private Tank playerTwo;
     private boolean isFirstPlayerTurn;
 
-    public Display() {
+    public Display(String name1, String type1, String name2, String type2) {
         isFirstPlayerTurn = true;
+        playerOne = new Tank(name1, type1);
+        playerTwo = new Tank(name2, type2);
         setContentPane(mainPanel);
         setTitle("Game");
         setSize(1940, 1040);

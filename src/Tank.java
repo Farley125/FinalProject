@@ -7,10 +7,10 @@ public class Tank {
     public Tank(String type, String name) {
         this.type = type;
         this.name = name;
-        if (type.equals("heavy")) {
+        if (type.equals("MBT")) {
             health = 300;
             damage = 50;
-        } else if (type.equals("medium")) {
+        } else if (type.equals("Light")) {
             health = 250;
             damage = 75;
         } else {

@@ -15,6 +15,9 @@ public class SetupScreen extends JFrame{
     private JButton mediumButton1;
     private JButton largeButton1;
     private JPanel mainPanel;
+    private JButton startButton;
+
+    private Display display;
     private static String tank1Type;
     private static String tank2Type;
     private static String tank1Name;
@@ -23,62 +26,54 @@ public class SetupScreen extends JFrame{
     public SetupScreen() {
         setContentPane(mainPanel);
         setTitle("Game");
-        setSize(1940, 1040);
+        setSize(800, 400);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
         smallButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank1Type = "Small";
+                tank1Type = "SPA";
             }
         });
         mediumButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank1Type = "Medium";
+                tank1Type = "Light";
             }
         });
         largeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank1Type = "Large";
+                tank1Type = "MBT";
             }
         });
         smallButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank2Type = "Small";
+                tank2Type = "SPA";
             }
         });
         mediumButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank2Type = "Medium";
+                tank2Type = "Light";
             }
         });
         largeButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                tank2Type = "Large";
+                tank2Type = "MBT";
             }
         });
-        textField2.addKeyListener(new KeyAdapter() {
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tank1Name = textField1.getText();
+                tank2Name = textField2.getText();
+                if (tank1Name != null && tank2Name != null && tank1Type != null && tank2Type != null && !tank1Name.equals(tank2Name))
+                    display = new Display(tank1Name, tank1Type, tank2Name, tank2Type);
+                dispose();
+            }
         });
-    }
-
-    public static String getTank1Type() {
-        return tank1Type;
-    }
-
-    public static String getTank2Type() {
-        return tank2Type;
-    }
-
-    public static String getTank1Name() {
-        return tank1Name;
-    }
-
-    public static String getTank2Name() {
-        return tank2Name;
     }
 }

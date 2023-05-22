@@ -21,8 +21,9 @@ public class Display extends JFrame {
 
     public Display(String name1, String type1, String name2, String type2) {
         isFirstPlayerTurn = true;
-        playerOne = new Tank(name1, type1);
-        playerTwo = new Tank(name2, type2);
+        playerOne = new Tank(name1, type1, 0, 0);
+        playerTwo = new Tank(name2, type2, 100, 0);
+        Player.setText(playerOne.getName() + "'s turn.");
         setContentPane(mainPanel);
         setTitle("Game");
         setSize(1940, 1040);
@@ -49,12 +50,14 @@ public class Display extends JFrame {
                     } else {
                         Player.setText(turnOrder[0].getName() + "' turn.");
                     }
-
+                    Projectile proj = new Projectile(Integer.parseInt(currentPow.getText()), playerOne.getDamage(), Double.parseDouble(currentAng.getText()), playerOne.getX(), playerOne.getY());
                     isFirstPlayerTurn = false;
                 } else {
                     Player.setText(turnOrder[1].getName());
+                    Projectile proj = new Projectile(Integer.parseInt(currentPow.getText()), playerTwo.getDamage(), Double.parseDouble(currentAng.getText()), playerTwo.getX(), playerTwo.getY());
                     isFirstPlayerTurn = true;
                 }
+
             }
         });
     }

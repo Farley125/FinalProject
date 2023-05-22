@@ -3,10 +3,14 @@ public class Tank {
     private int damage;
     private String type;
     private String name;
+    private int x;
+    private int y;
 
-    public Tank(String type, String name) {
+    public Tank(String type, String name, int x, int y) {
         this.type = type;
         this.name = name;
+        this.x = x;
+        this.y = y;
         if (type.equals("MBT")) {
             health = 300;
             damage = 50;
@@ -29,5 +33,13 @@ public class Tank {
 
     public int getDamage() {
         return damage;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

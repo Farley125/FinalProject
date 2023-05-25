@@ -18,6 +18,7 @@ public class Display extends JFrame implements Runnable{
     private Tank playerOne;
     private Tank playerTwo;
     private boolean isFirstPlayerTurn;
+    private KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     final int FPS = 60;
 
@@ -30,8 +31,6 @@ public class Display extends JFrame implements Runnable{
         Power.setFocusable(false);
         Angle.setFocusable(false);
         Player.setText(playerOne.getName() + "'s turn.");
-        KeyHandler keyH = new KeyHandler();
-        Thread gameThread;
         setContentPane(mainPanel);
         setTitle("Game");
         setSize(1940, 1040);
@@ -40,6 +39,9 @@ public class Display extends JFrame implements Runnable{
         mainPanel.setDoubleBuffered(true);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
+        this.addKeyListener(keyH);
+        this.setFocusable(true);
+        startGameThread();
         Power.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -80,22 +82,50 @@ public class Display extends JFrame implements Runnable{
     @Override
     public void run() {
         double drawInterval = 1000000000/FPS;
-        double nextDrawTime = System.nanoTime() + drawInterval;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0;
+        int drawCount = 0;
+        int capSlider = 0;
 
         while (gameThread != null) {
-            try {
-                double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000;
-                if (remainingTime < 0) {
-                    remainingTime = 0;
-                }
-                Thread.sleep((long) remainingTime);
-                nextDrawTime += drawInterval;
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            currentTime = System.nanoTime();
+
+            delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
+            lastTime = currentTime;
+
+            if (delta >= 1) {
+                if (capSlider == 2) {
+                    update();
+                    capSlider = 0;
+                } else capSlider++;
+                delta--;
+                drawCount++;
             }
 
+            if (timer >= 1000000000) {
+                System.out.println("FPS: " + drawCount);
+                drawCount = 0;
+                timer = 0;
+            }
+        }
+    }
 
+    public void update() {
+        if (keyH.isUpPressed()) {
+            System.out.println("up");
+            Power.setValue(Power.getValue() + 1);
+        } else if (keyH.isDownPressed()) {
+            System.out.println("down");
+            Power.setValue(Power.getValue() - 1);
+        } else if (keyH.isLeftPressed()) {
+            System.out.println("left");
+            Angle.setValue(Angle.getValue() - 1);
+        } else if (keyH.isRightPressed()) {
+            System.out.println("right");
+            Angle.setValue(Angle.getValue() + 1);
         }
     }
 }

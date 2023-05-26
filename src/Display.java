@@ -1,10 +1,11 @@
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class Display extends JFrame implements Runnable{
+public class Display extends JFrame implements Runnable {
     private JSlider Power;
     private JSlider Angle;
     private JLabel Player;
@@ -17,21 +18,30 @@ public class Display extends JFrame implements Runnable{
     private Tank[] turnOrder = new Tank[2];
     private Tank playerOne;
     private Tank playerTwo;
+    private Image tankIMG1;
+    private Image tankIMG2;
     private boolean isFirstPlayerTurn;
     private KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     final int FPS = 60;
 
     public Display(String name1, String type1, String name2, String type2) {
+        String imageURL1 = "src/green tank.png";
+        String imageURL2 = "src/red tank.png";
+        tankIMG1 = Toolkit.getDefaultToolkit().getImage(imageURL1);
+        tankIMG2 = Toolkit.getDefaultToolkit().getImage(imageURL2);
+        System.out.println(tankIMG1);
+        System.out.println(tankIMG2);
         isFirstPlayerTurn = true;
-        playerOne = new Tank(type1, name1, 0, 0);
-        playerTwo = new Tank(type2, name2, 100, 0);
+        playerOne = new Tank(type1, name1, 130, 710);
+        playerTwo = new Tank(type2, name2, 1770, 710);
         turnOrder[0] = playerOne;
         turnOrder[1] = playerTwo;
         Power.setFocusable(false);
         Angle.setFocusable(false);
         Player.setText(playerOne.getName() + "'s turn.");
         setContentPane(mainPanel);
+        mainPanel.add(new CustomPaintComponent());
         setTitle("Game");
         setSize(1940, 1040);
         setResizable(false);
@@ -58,16 +68,16 @@ public class Display extends JFrame implements Runnable{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isFirstPlayerTurn) {
-                    if (turnOrder[0].getName().substring(turnOrder[0].getName().length()-1).equalsIgnoreCase("s")) {
-                        Player.setText(turnOrder[0].getName() + "'s turn.");
+                    if (turnOrder[0].getName().substring(turnOrder[0].getName().length() - 1).equalsIgnoreCase("s")) {
+                        Player.setText(turnOrder[0].getName() + "' turn.");
                     } else {
                         Player.setText(turnOrder[0].getName() + "'s turn.");
                     }
-                    Projectile proj = new Projectile(Integer.parseInt(currentPow.getText()), playerOne.getDamage(), Double.parseDouble(currentAng.getText()), playerOne.getX(), playerOne.getY());
+                    playerOne.shoot(Integer.parseInt(currentPow.getText()), Integer.parseInt(currentAng.getText()));
                     isFirstPlayerTurn = false;
                 } else {
                     Player.setText(turnOrder[1].getName());
-                    Projectile proj = new Projectile(Integer.parseInt(currentPow.getText()), playerTwo.getDamage(), Double.parseDouble(currentAng.getText()), playerTwo.getX(), playerTwo.getY());
+                    playerTwo.shoot(Integer.parseInt(currentPow.getText()), Integer.parseInt(currentAng.getText()));
                     isFirstPlayerTurn = true;
                 }
 
@@ -79,9 +89,10 @@ public class Display extends JFrame implements Runnable{
         gameThread = new Thread(this);
         gameThread.start();
     }
+
     @Override
     public void run() {
-        double drawInterval = 1000000000/FPS;
+        double drawInterval = 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -114,18 +125,49 @@ public class Display extends JFrame implements Runnable{
     }
 
     public void update() {
+        mainPanel.repaint();
         if (keyH.isUpPressed()) {
-            System.out.println("up");
             Power.setValue(Power.getValue() + 1);
         } else if (keyH.isDownPressed()) {
-            System.out.println("down");
             Power.setValue(Power.getValue() - 1);
         } else if (keyH.isLeftPressed()) {
-            System.out.println("left");
             Angle.setValue(Angle.getValue() - 1);
         } else if (keyH.isRightPressed()) {
-            System.out.println("right");
             Angle.setValue(Angle.getValue() + 1);
+        } else if (keyH.isaPressed()) {
+            if (isFirstPlayerTurn) {
+                if (playerOne.getX() > 0) {
+                    playerOne.setX(playerOne.getX() - 5);
+                } else {
+                    if (playerTwo.getX() > 0) {
+                        playerTwo.setX(playerTwo.getX() - 5);
+                    }
+                }
+            }
+            mainPanel.repaint();
+        } else if (keyH.isdPressed()) {
+            if (isFirstPlayerTurn) {
+                if (playerOne.getX() < 1900) {
+                    playerOne.setX(playerOne.getX() + 5);
+                    } else {
+                    if (playerTwo.getX() < 1900) {
+                        playerTwo.setX(playerTwo.getX() + 5);
+                    }
+                }
+            }
+            mainPanel.repaint();
+        }
+    }
+
+    public class CustomPaintComponent extends Component {
+        public void paint(Graphics g) {
+            System.out.println("Paint " + playerOne.getX() + " " + playerOne.getY());
+            Graphics2D g2d = (Graphics2D)g;
+            System.out.println(tankIMG1);
+            g2d.drawImage(tankIMG1, playerOne.getX(), playerOne.getY(), null);
+            System.out.println("Paint " + playerTwo.getX() + " " + playerTwo.getY());
+            System.out.println(tankIMG2);
+            g2d.drawImage(tankIMG2, playerTwo.getX(), playerTwo.getY(), null);
         }
     }
 }

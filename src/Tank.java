@@ -42,4 +42,16 @@ public class Tank {
     public int getY() {
         return y;
     }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void shoot(int pow, double ang) {
+        Projectile test = new Projectile(pow, damage, ang, x, y);
+    }
 }

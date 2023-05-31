@@ -6,13 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Display extends JFrame implements Runnable {
-    private JSlider Power;
-    private JSlider Angle;
+    private JSlider powerSlider;
+    private JSlider angleSlider;
     private JLabel Player;
     private JButton fireButton;
     private JPanel mainPanel;
     private JLabel powLabel;
-    private JLabel angSlider;
+    private JLabel angLabel;
     private JLabel currentPow;
     private JLabel currentAng;
     private Tank[] turnOrder = new Tank[2];
@@ -26,22 +26,24 @@ public class Display extends JFrame implements Runnable {
     final int FPS = 60;
 
     public Display(String name1, String type1, String name2, String type2) {
+        setContentPane(mainPanel);
+        mainPanel. add(new CustomPaintComponent());
         String imageURL1 = "src/green tank.png";
         String imageURL2 = "src/red tank.png";
         tankIMG1 = Toolkit.getDefaultToolkit().getImage(imageURL1);
         tankIMG2 = Toolkit.getDefaultToolkit().getImage(imageURL2);
-        System.out.println(tankIMG1);
-        System.out.println(tankIMG2);
         isFirstPlayerTurn = true;
         playerOne = new Tank(type1, name1, 130, 710);
         playerTwo = new Tank(type2, name2, 1770, 710);
         turnOrder[0] = playerOne;
         turnOrder[1] = playerTwo;
-        Power.setFocusable(false);
-        Angle.setFocusable(false);
-        Player.setText(playerOne.getName() + "'s turn.");
-        setContentPane(mainPanel);
-        mainPanel.add(new CustomPaintComponent());
+        powerSlider.setFocusable(false);
+        angleSlider.setFocusable(false);
+        if (playerOne.getName().substring(turnOrder[0].getName().length() - 1).equalsIgnoreCase("s")) {
+            Player.setText(playerOne.getName() + "' turn.");
+        } else {
+            Player.setText(playerOne.getName() + "'s turn.");
+        }
         setTitle("Game");
         setSize(1940, 1040);
         setResizable(false);
@@ -52,16 +54,16 @@ public class Display extends JFrame implements Runnable {
         this.addKeyListener(keyH);
         this.setFocusable(true);
         startGameThread();
-        Power.addChangeListener(new ChangeListener() {
+        powerSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                currentPow.setText(Integer.toString(Power.getValue()));
+                currentPow.setText(Integer.toString(powerSlider.getValue()));
             }
         });
-        Angle.addChangeListener(new ChangeListener() {
+        angleSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                currentAng.setText(Integer.toString(Angle.getValue()));
+                currentAng.setText(Integer.toString(angleSlider.getValue()));
             }
         });
         fireButton.addActionListener(new ActionListener() {
@@ -127,13 +129,13 @@ public class Display extends JFrame implements Runnable {
     public void update() {
         mainPanel.repaint();
         if (keyH.isUpPressed()) {
-            Power.setValue(Power.getValue() + 1);
+            powerSlider.setValue(powerSlider.getValue() + 1);
         } else if (keyH.isDownPressed()) {
-            Power.setValue(Power.getValue() - 1);
+            powerSlider.setValue(powerSlider.getValue() - 1);
         } else if (keyH.isLeftPressed()) {
-            Angle.setValue(Angle.getValue() - 1);
+            angleSlider.setValue(angleSlider.getValue() - 1);
         } else if (keyH.isRightPressed()) {
-            Angle.setValue(Angle.getValue() + 1);
+            angleSlider.setValue(angleSlider.getValue() + 1);
         } else if (keyH.isaPressed()) {
             if (isFirstPlayerTurn) {
                 if (playerOne.getX() > 0) {
